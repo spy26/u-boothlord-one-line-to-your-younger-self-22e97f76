@@ -25,6 +25,16 @@ def write_entry(output_dir: str) -> str:
     Never deletes anything, and never writes into the repo.
     Returns the path of the file written.
     """
+    # Final gate: refuse to write an entry that breaks the competition rules.
+    if not ENTRY.strip():
+        print("error: entry is empty or only whitespace", file=sys.stderr)
+        sys.exit(2)
+    if "\n" in ENTRY or "\r" in ENTRY:
+        print("error: entry must be a single line", file=sys.stderr)
+        sys.exit(2)
+    if len(ENTRY) > 200:
+        print(f"error: entry is {len(ENTRY)} characters, over the 200-char limit", file=sys.stderr)
+        sys.exit(2)
     os.makedirs(output_dir, exist_ok=True)
     target = os.path.join(output_dir, OUTPUT_FILENAME)
     payload = ENTRY.encode("utf-8")
